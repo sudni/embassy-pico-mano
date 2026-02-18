@@ -1,0 +1,28 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "probe-rs-debug",
+            "request": "launch",
+            "name": "probe-rs Debug",
+            "cwd": "${workspaceFolder}",
+            "chip": "RP2040",
+            "protocol": "swd",
+            "speed": 4000,
+            "flashingConfig": {
+                "flashingEnabled": true,
+                "haltAfterReset": true,
+                "formatOptions": {
+                    "binaryFormat": "elf"
+                }
+            },
+            "coreConfigs": [
+                {
+                    "coreIndex": 0,
+                    "programBinary": "target/thumbv6m-none-eabi/debug/embassy-pico-mano",
+                }
+            ],
+            "preLaunchTask": "rust: cargo build"
+        }
+    ]
+}

@@ -407,6 +407,7 @@ dependencies = [
  "embedded-hal-async",
  "embedded-hal-bus",
  "embedded-io-async",
+ "micromath",
  "mipidsi",
  "panic-probe",
  "portable-atomic",

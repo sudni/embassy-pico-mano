@@ -1,0 +1,10 @@
+warning: constant `MAIN_COLORS` is never used
+  --> src/main.rs:33:7
+   |
+33 | const MAIN_COLORS: [Rgb565; 4] = [Rgb565::RED, Rgb565::GREEN, Rgb565::BLUE, Rgb565::MAGENTA];
+   |       ^^^^^^^^^^^
+   |
+   = note: `#[warn(dead_code)]` on by default
+
+warning: `embassy-pico-mano` (bin "embassy-pico-mano") generated 1 warning
+    Finished `dev` profile [optimized + debuginfo] target(s) in 0.10s
