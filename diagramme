@@ -1,0 +1,63 @@
+'''mermaid
+sequenceDiagram
+    participant Main as RP2040 (Main Task)
+    participant Touch as FT6206 (Touch Controller)
+    participant FB as FrameBuffer (RAM)
+    participant Disp as ILI9341 (Display)
+    Note over Main: Initialisation
+    Main->>Main: init_rp2040_peripherals()
+    Main->>Main: setup_spi_dma(64MHz)
+    Main->>Main: setup_i2c(400kHz)
+    
+    Main->>Touch: write_register(0x80, 20)
+    Note right of Touch: Réglage sensibilité (Threshold)
+    
+    Main->>Disp: init_display()
+    Main->>FB: alloc_static_buffer()
+    loop Chaque Frame (Animation Tunnel)
+        Main->>FB: fb.clear(BLACK)
+        
+        loop 10 Cercles
+            Main->>FB: calculate_radius_&_draw()
+        end
+        Main->>Touch: get_touch_event()
+        alt Écran touché
+            Touch-->>Main: Some(TouchPoint {x, y})
+            Main->>Main: format_coordinates_string()
+            Main->>FB: draw_text(coordinates, WHITE)
+        else Aucun contact
+            Touch-->>Main: None
+        end
+        Main->>Disp: set_pixels(fb_iterator)
+        Note right of Disp: Transfert via SPI DMA (Rapide)
+        
+        Main->>Main: led.toggle()
+        
+        opt Toutes les 200 frames
+            Main->>Main: calculate_fps()
+            Main->>Disp: show_fps_on_screen()
+        end
+    end
+'''
+```mermaid
+graph TD
+    Start([Start]) --> Init[Init RP2040 Peripherals]
+    Init --> Bus[Setup SPI DMA & I2C]
+    Bus --> Config[Config FT6206 & ILI9341]
+    Config --> Alloc[Alloc FrameBuffer]
+    
+    Alloc --> Loop[Clear FrameBuffer]
+    Loop --> Draw[Draw 10 Circles]
+    Draw --> Touch{Touch Detected?}
+    
+    Touch -- Yes --> Text[Draw Coordinates]
+    Touch -- No --> DMA[Transfer FB via SPI DMA]
+    Text --> DMA
+    
+    DMA --> LED[Toggle LED]
+    LED --> FPS{200 Frames?}
+    
+    FPS -- Yes --> Calc[Calculate & Display FPS]
+    FPS -- No --> Loop
+    Calc --> Loop
+```
